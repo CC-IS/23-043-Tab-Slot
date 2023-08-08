@@ -91,24 +91,27 @@ def command_created(args: adsk.core.CommandCreatedEventArgs):
     #default values for length and edge inputs
     defaultLengthUnits = app.activeProduct.unitsManager.defaultLengthUnits
     default_edge_dist = adsk.core.ValueInput.createByString("1/4")
-    default_tab_width = adsk.core.ValueInput.createByString("1.5")
-    #value input for distance from edge of tab
-    # edge_dist = inputs.addValueInput('dist_edge', 'distance from edge', defaultLengthUnits,default_edge_dist)
-    #value input for width of tab
-    # tab_width = inputs.addValueInput('tab_width', 'width of tab', defaultLengthUnits, default_tab_width)
-    #select input for tab body
-    # tab_body_select = inputs.addSelectionInput('select_tab_body','tab body','select body to add tab to')
-    # tab_body_select.addSelectionFilter('SolidBodies') 
-    # tab_body_select.setSelectionLimits(1,0)
-    #select input for slot body
-    # slot_body_select = inputs.addSelectionInput('select_slot_body','slot body','select body to cut slot into') 
-    # slot_body_select.addSelectionFilter('SolidBodies')
-    #select input for edge tab 
-    tab_edge_select = inputs.addSelectionInput('select_tab_edge','tab edge','select edge to put tab onto')
-    tab_edge_select.addSelectionFilter('LinearEdges')
-    tab_edge_select.setSelectionLimits(1,0)
-     #int spinner input for number of tabs
-    # tab_qty = inputs.addIntegerSpinnerCommandInput('tab_qty','number of tabs',1,20,1,1)
+    default_tab_width = adsk.core.ValueInput.createByString("0")
+
+    
+    #Checkbox for selecting auto vs manual tab
+    autoTab_bool = inputs.addBoolValueInput("autoTab","Auto Tab",True,"",True)
+
+    #value input for tab width if autoTab is false
+    tabWidth_value = inputs.addValueInput("tabWidth","Tab Width",defaultLengthUnits,default_tab_width)
+    #value input for tab edge distance if autoTab is false
+    edgeDistance_value = inputs.addValueInput("edgeDistance","Edge Distance",defaultLengthUnits,default_edge_dist)
+    #integer slider input for number of tabs if autoTab is false
+    tabCount_slider = inputs.addIntegerSliderCommandInput("tabCount","Number of Tabs",0,5)
+    #select input for selecting edges where tabs should be placed 
+    tabEdge_select = inputs.addSelectionInput('tabEdge','Tab Edge','select edges to put tabs onto')
+    tabEdge_select.addSelectionFilter('LinearEdges')
+    tabEdge_select.setSelectionLimits(1,0)
+
+    #tab specification  disabled since autoTab enabled by default 
+    tabWidth_value.isEnabled = False
+    edgeDistance_value.isEnabled = False
+    tabCount_slider.isEnabled = False
     
     # TODO Connect to the events that are needed by this command.
     futil.add_handler(args.command.execute, command_execute, local_handlers=local_handlers)
@@ -128,19 +131,9 @@ def command_execute(args: adsk.core.CommandEventArgs):
     try:
         # Get a reference to your command's inputs.
         inputs = args.command.commandInputs
-        # edge_dist_input: adsk.core.ValueCommandInput = inputs.itemById('dist_edge')
-        # tab_width_input: adsk.core.ValueCommandInput = inputs.itemById('tab_width')
-        # tab_body_input: adsk.core.SelectionCommandInput = inputs.itemById('select_tab_body')
-        # slot_body_input: adsk.core.SelectionCommandInput = inputs.itemById('select_slot_body')
-        # tab_face_input: adsk.core.SelectionCommandInput = inputs.itemById('select_slot_face')
+        
         tab_edge_input: adsk.core.SelectionCommandInput = inputs.itemById('select_tab_edge')
-        # tab_qty_input: adsk.core.IntegerSpinnerCommandInput = inputs.itemById('tab_qty')
 
-        
-        
-        # tas.drawTab(tedge,edgeDist,twid,tab_qty_input)
-
-        #get selected edge into brepedge collection
         selectedEdges = adsk.core.ObjectCollection.create()
 
         #generate autotabs for the selected edges 
@@ -173,7 +166,28 @@ def command_input_changed(args: adsk.core.InputChangedEventArgs):
     changed_input = args.input
     inputs = args.inputs
     futil.log(f'{CMD_NAME} Input Changed Event fired from a change to {changed_input.id}')
+    if changed_input.id == "autoTab":
+        tabWidth_value = inputs.itemById("tabWidth")
+        edgeDistance = inputs.itemById("edgeDistance")
+        tabCount_slider = inputs.itemById("tabCount")
+        tabEdge_select = inputs.itemById("tabEdge")
+        if changed_input.value == True:
+            tabWidth_value.isEnabled = False
+            edgeDistance.isEnabled = False
+            tabCount_slider.isEnabled = False
+            tabEdge_select.setSelectionLimits(1,0)
 
+    
+        else:
+            tabWidth_value.isEnabled = True 
+            edgeDistance.isEnabled = True
+            tabCount_slider.isEnabled = True
+            tabEdge_select.setSelectionLimits(1,1)
+            if tabEdge_select.selectionCount > 1:
+                tabEdge_select.clearSelection()
+
+        
+        
     #TODO tell or stop user from going over max tab count (based on edge length, tab width, edge distance, min tab separation)
     
 
