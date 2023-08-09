@@ -132,13 +132,13 @@ def command_execute(args: adsk.core.CommandEventArgs):
         # Get a reference to your command's inputs.
         inputs = args.command.commandInputs
         
-        tab_edge_input: adsk.core.SelectionCommandInput = inputs.itemById('select_tab_edge')
+        tabEdge_select: adsk.core.SelectionCommandInput = inputs.itemById('tabEdge')
 
         selectedEdges = adsk.core.ObjectCollection.create()
 
         #generate autotabs for the selected edges 
-        for i in range(tab_edge_input.selectionCount):
-            selectedEdges.add(tab_edge_input.selection(i).entity)
+        for i in range(tabEdge_select.selectionCount):
+            selectedEdges.add(tabEdge_select.selection(i).entity)
         tas.autoTab(selectedEdges)
 
 
