@@ -182,7 +182,7 @@ def command_input_changed(args: adsk.core.InputChangedEventArgs):
     inputs = args.inputs
     futil.log(f'{CMD_NAME} Input Changed Event fired from a change to {changed_input.id}')
     if changed_input.id == "autoTab":
-        tabWidth_value = inputs.itemById("tabWidth")
+        tabWidth_value:adsk.core.ValueCommandInput = inputs.itemById("tabWidth")
         tabSpacing = inputs.itemById("tabSpacing")
         tabCount_slider = inputs.itemById("tabCount")
         tabEdge_select = inputs.itemById("tabEdge")
@@ -197,9 +197,6 @@ def command_input_changed(args: adsk.core.InputChangedEventArgs):
             tabWidth_value.isEnabled = True 
             tabSpacing.isEnabled = True
             tabCount_slider.isEnabled = True
-            tabEdge_select.setSelectionLimits(1,1)
-            if tabEdge_select.selectionCount > 1:
-                tabEdge_select.clearSelection()
 
         
         

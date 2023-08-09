@@ -61,20 +61,15 @@ def autoTab(selectedEdges:adsk.core.ObjectCollection,tabWidth_input:adsk.core.Va
                     #do extrusion by adding it to extrudes
                     extrudeFeature = extrudes.add(extInput)
                 elif tabOnly == False:
-                    try:
-                        extrudeFeature = extrudes.add(cutInput)
-                        #create extrude input with all profiles
-                        extInput: adsk.fusion.ExtrudeFeatureInput = extrudes.createInput(profCollection,adsk.fusion.FeatureOperations.JoinFeatureOperation)
-                        #specify joining body
-                        extInput.participantBodies = [sketchFace.body]
-                        #specify one directional extrude
-                        extInput.setOneSideExtent(distanceExtent,direction)
-                        #do extrusion by adding it to extrudes
-                        extrudeFeature = extrudes.add(extInput)
-                    except:
-                        ui.messageBox("excepted")
-                        pass
-                    
+                    extrudeFeature = extrudes.add(cutInput)
+                    #create extrude input with all profiles
+                    extInput: adsk.fusion.ExtrudeFeatureInput = extrudes.createInput(profCollection,adsk.fusion.FeatureOperations.JoinFeatureOperation)
+                    #specify joining body
+                    extInput.participantBodies = [sketchFace.body]
+                    #specify one directional extrude
+                    extInput.setOneSideExtent(distanceExtent,direction)
+                    #do extrusion by adding it to extrudes
+                    extrudeFeature = extrudes.add(extInput)
 
         #create 3d point to specify location of text on distance dimension
         def positionDistanceText(point1:adsk.fusion.SketchPoint,point2:adsk.fusion.SketchPoint):
@@ -248,7 +243,6 @@ def autoTab(selectedEdges:adsk.core.ObjectCollection,tabWidth_input:adsk.core.Va
         #     tabSketch.name = str(error)
 
     #
-    pass
 
 def bodyAutoTab(selectedBodies:adsk.fusion.BRepBodies):
     product = app.activeProduct
