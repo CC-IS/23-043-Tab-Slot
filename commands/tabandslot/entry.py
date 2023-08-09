@@ -90,8 +90,8 @@ def command_created(args: adsk.core.CommandCreatedEventArgs):
 
     #default values for length and edge inputs
     defaultLengthUnits = app.activeProduct.unitsManager.defaultLengthUnits
-    default_edge_dist = adsk.core.ValueInput.createByString("1/4")
-    default_tab_width = adsk.core.ValueInput.createByString("0")
+    default_tab_spacing = adsk.core.ValueInput.createByString("1/4")
+    default_tab_width = adsk.core.ValueInput.createByString("1")
 
     
     #Checkbox for selecting auto vs manual tab
@@ -100,7 +100,7 @@ def command_created(args: adsk.core.CommandCreatedEventArgs):
     #value input for tab width if autoTab is false
     tabWidth_input = inputs.addValueInput("tabWidth","Tab Width",defaultLengthUnits,default_tab_width)
     #value input for tab edge distance if autoTab is false
-    edgeDistance_input = inputs.addValueInput("edgeDistance","Edge Distance",defaultLengthUnits,default_edge_dist)
+    tabSpacing_input = inputs.addValueInput("tabSpacing","Minimum Tab Spacing",defaultLengthUnits,default_tab_spacing)
     #integer slider input for number of tabs if autoTab is false
     tabCount_input = inputs.addIntegerSliderCommandInput("tabCount","Number of Tabs",0,5)
     #select input for selecting edges where tabs should be placed 
@@ -111,7 +111,7 @@ def command_created(args: adsk.core.CommandCreatedEventArgs):
 
     #tab specification  disabled since autoTab enabled by default 
     tabWidth_input.isEnabled = False
-    edgeDistance_input.isEnabled = False
+    tabSpacing_input.isEnabled = False
     tabCount_input.isEnabled = False
     
     # TODO Connect to the events that are needed by this command.
@@ -143,6 +143,9 @@ def command_execute(args: adsk.core.CommandEventArgs):
         #input for tab width
         tabWidth_input: adsk.core.ValueCommandInput = inputs.itemById("tabWidth")
 
+        #input for minimum spacing
+        tabSpacing_input:adsk.core.ValueCommandInput = inputs.itemById("tabSpacing")
+
 
         for i in range(tabEdge_input.selectionCount):
             selectedEdges.add(tabEdge_input.selection(i).entity)
@@ -151,7 +154,7 @@ def command_execute(args: adsk.core.CommandEventArgs):
             #generate autotabs for the selected edges 
             tas.autoTab(selectedEdges)
         else:
-            tas.autoTab(selectedEdges,tabWidth_input)
+            tas.autoTab(selectedEdges,tabWidth_input,tabSpacing_input)
 
 
 
@@ -180,19 +183,19 @@ def command_input_changed(args: adsk.core.InputChangedEventArgs):
     futil.log(f'{CMD_NAME} Input Changed Event fired from a change to {changed_input.id}')
     if changed_input.id == "autoTab":
         tabWidth_value = inputs.itemById("tabWidth")
-        edgeDistance = inputs.itemById("edgeDistance")
+        tabSpacing = inputs.itemById("tabSpacing")
         tabCount_slider = inputs.itemById("tabCount")
         tabEdge_select = inputs.itemById("tabEdge")
         if changed_input.value == True:
             tabWidth_value.isEnabled = False
-            edgeDistance.isEnabled = False
+            tabSpacing.isEnabled = False
             tabCount_slider.isEnabled = False
             tabEdge_select.setSelectionLimits(1,0)
 
     
         else:
             tabWidth_value.isEnabled = True 
-            edgeDistance.isEnabled = True
+            tabSpacing.isEnabled = True
             tabCount_slider.isEnabled = True
             tabEdge_select.setSelectionLimits(1,1)
             if tabEdge_select.selectionCount > 1:

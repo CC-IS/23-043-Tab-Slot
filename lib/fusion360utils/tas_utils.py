@@ -7,7 +7,7 @@ ui = app.userInterface
 
 
 #function that will generate tabs for selected edges automatically decides spacing, tabwidth, and number of tabs 
-def autoTab(selectedEdges:adsk.core.ObjectCollection,tabWidth_input:adsk.core.ValueCommandInput = None,tabSpacing_value:adsk.core.ValueCommandInput =None,tabOnly = True):
+def autoTab(selectedEdges:adsk.core.ObjectCollection,tabWidth_input:adsk.core.ValueCommandInput = None,tabSpacing_input:adsk.core.ValueCommandInput =None,tabOnly = True):
     try:
         #get current component  
         product = app.activeProduct
@@ -192,19 +192,21 @@ def autoTab(selectedEdges:adsk.core.ObjectCollection,tabWidth_input:adsk.core.Va
             
             if tabWidth_input == None:
                 tabWidth = design.userParameters.itemByName("tabWidth")
+                minTabSpacing = 3*tabWidth.value
                 if tabWidth == None:
                     tabWidth = design.userParameters.add("tabWidth",adsk.core.ValueInput.createByString(f"3*{mt.name}"),design.unitsManager.defaultLengthUnits,"")
             else:
                 tabWidth = tabWidth_input
-             
-    
-            minTabSpacing = 3*tabWidth.value
+                minTabSpacing = tabSpacing_input.value
+                
+
             maxtabCount = math.floor((line.length-2*mt.value)/(tabWidth.value))
             tabCount = maxtabCount
             tabSpacingVal = (line.length-(2*mt.value)-(tabCount*tabWidth.value))/((tabCount)-1)
             #need to account for edge case when there is only space for one tab on the edge. In this scenarion one centered tab is drawn and created 
             
-            while tabSpacingVal < minTabSpacing and tabCount >1:
+            while tabSpacingVal <= minTabSpacing and tabCount >1:
+                    ui.messageBox(f"tab spacing is {tabSpacingVal}")
                     tabSpacingVal = (line.length-(2*mt.value)-(tabCount*tabWidth.value))/((tabCount)-1)
                     tabCount -= 1
 
