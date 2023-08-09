@@ -7,7 +7,7 @@ ui = app.userInterface
 
 
 #function that will generate tabs for selected edges automatically decides spacing, tabwidth, and number of tabs 
-def autoTab(selectedEdges:adsk.core.ObjectCollection,tabOnly = True):
+def autoTab(selectedEdges:adsk.core.ObjectCollection,tabWidth_input:adsk.core.ValueCommandInput = None,tabSpacing_value:adsk.core.ValueCommandInput =None,tabOnly = True):
     try:
         #get current component  
         product = app.activeProduct
@@ -104,17 +104,17 @@ def autoTab(selectedEdges:adsk.core.ObjectCollection,tabOnly = True):
             tabNormal = calcTabNormal(line)
 
             #add a point along the tab line that is a given distance from a refernce point
-            def addLinePoint(refpoint:adsk.fusion.SketchPoint,distance):
+            def addLinePoint(refpoint:adsk.fusion.SketchPoint,distance:str):
                 sp1 = tabSketch.sketchPoints.add(line.startSketchPoint.geometry)
                 tabSketch.geometricConstraints.addCoincident(sp1,line)
                 d1 = tabSketch.sketchDimensions.addDistanceDimension(sp1,refpoint,0,positionDistanceText(sp1,refpoint))
                 d1.parameter.expression = distance
                 return sp1
             
-            #add one rectangle along line  
-            def addLineRectangle(refpoint:adsk.fusion.SketchPoint,distance:str):
+            #add one rectangle along line a given distance from a reference point 
+            def addLineRectangle(refpoint:adsk.fusion.SketchPoint,distance:str,tabWidth:str):
                 sp1 = addLinePoint(refpoint,distance)
-                sp2 = addLinePoint(sp1,tabWidth.name)
+                sp2 = addLinePoint(sp1,tabWidth)
                 p3 = adsk.core.Point3D.create(sp2.worldGeometry.x,sp2.worldGeometry.y,sp2.worldGeometry.z)
                 p3.translateBy(tabNormal)
                 rect = tabSketch.sketchCurves.sketchLines.addThreePointRectangle(sp1,sp2,tabSketch.modelToSketchSpace(p3))
@@ -122,7 +122,7 @@ def autoTab(selectedEdges:adsk.core.ObjectCollection,tabOnly = True):
                 tabSketch.geometricConstraints.addPerpendicular(tabLine,rect.item(1))
                 tabSketch.geometricConstraints.addParallel(tabLine,rect.item(2))
                 height = tabSketch.sketchDimensions.addDistanceDimension(rect.item(1).startSketchPoint,rect.item(1).endSketchPoint,0,positionDistanceText(rect.item(1).startSketchPoint,rect.item(1).endSketchPoint))
-                height.parameter.expression = mt.name
+                height.parameter.expression = mt.expression
                 # for side in rect:
                 #     sp1 = side.startSketchPoint
                 #     p1 = sp1.worldGeometry
@@ -186,11 +186,17 @@ def autoTab(selectedEdges:adsk.core.ObjectCollection,tabOnly = True):
                 return centerRectangle
 
 
-            mt = design.userParameters.itemByName("mt")
-            #calculate tab spacing 
-            tabWidth = design.userParameters.itemByName("tabWidth")
-            if tabWidth == None:
-                tabWidth = design.userParameters.add("tabWidth",adsk.core.ValueInput.createByString(f"3*{mt.name}"),design.unitsManager.defaultLengthUnits,"")
+            mt:adsk.fusion.UserParameter = design.userParameters.itemByName("mt")
+            #calculate tab spacing
+
+            
+            if tabWidth_input == None:
+                tabWidth = design.userParameters.itemByName("tabWidth")
+                if tabWidth == None:
+                    tabWidth = design.userParameters.add("tabWidth",adsk.core.ValueInput.createByString(f"3*{mt.name}"),design.unitsManager.defaultLengthUnits,"")
+            else:
+                tabWidth = tabWidth_input
+             
     
             minTabSpacing = 3*tabWidth.value
             maxtabCount = math.floor((line.length-2*mt.value)/(tabWidth.value))
@@ -202,15 +208,14 @@ def autoTab(selectedEdges:adsk.core.ObjectCollection,tabOnly = True):
                     tabSpacingVal = (line.length-(2*mt.value)-(tabCount*tabWidth.value))/((tabCount)-1)
                     tabCount -= 1
 
-
             if tabCount > 1:
                 tabSpacing = design.unitsManager.formatInternalValue(tabSpacingVal)
-                r1 = addLineRectangle(line.endSketchPoint,mt.name)
+                r1 = addLineRectangle(line.endSketchPoint,mt.name,tabWidth.expression)
                 refrect = r1
                 refpoint = findNextRefPoint(line.endSketchPoint,refrect)
                 for i in range(tabCount):
                     #TODO create vector that can help in creating desired linespacing
-                    refrect = addLineRectangle(refpoint,tabSpacing)
+                    refrect = addLineRectangle(refpoint,tabSpacing,tabWidth.expression)
                     refpoint = findNextRefPoint(line.endSketchPoint,refrect)
             else:
                 sketchCenterRectangle()
