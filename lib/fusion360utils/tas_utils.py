@@ -229,12 +229,27 @@ def autoTab(selectedEdges:adsk.core.ObjectCollection,tabWidth_input:adsk.core.Va
         
         
     except Exception as error:
-        # ui.messageBox("drawTab Failed : " + str(error)) 
         ui.messageBox('Failed:\n{}'.format(traceback.format_exc()))
-        # if tabSketch.isValid == True:
-        #     tabSketch.name = str(error)
 
-    #
+"""Code beyond this point is outdated and not used in current iteration of add-in.
+TODO look through this code and delete what is unecessary """
+
+        
+def alltest(edgeDist:adsk.core.ValueCommandInput,tabWidth:adsk.core.ValueCommandInput,tabQuantity:adsk.core.IntegerSpinnerCommandInput):
+    #get current design and all bodies
+    product = app.activeProduct
+    design = adsk.fusion.Design.cast(product)
+    comp = design.activeComponent
+    bodies = comp.bRepBodies
+    minEdgeLength = (tabWidth.value+edgeDist.value*2)*tabQuantity.value
+
+    for body in bodies:
+        edges = body.edges
+        for edge in edges:
+            if edge.length >= minEdgeLength:
+                drawTab(edge,edgeDist,tabWidth,tabQuantity)
+
+    
 
 def bodyAutoTab(selectedBodies:adsk.fusion.BRepBodies):
     product = app.activeProduct
@@ -276,10 +291,6 @@ def testAuto():
                     break
             if facebool:
                 autoTab(selectedEdges)
-            
-    
-
-
 
 def drawTab(tEdge:adsk.fusion.BRepEdge,edgeDist:adsk.core.ValueCommandInput,tabWidth:adsk.core.ValueCommandInput,tabQuantity:adsk.core.IntegerSpinnerCommandInput):
     try:
@@ -457,19 +468,6 @@ def drawTab(tEdge:adsk.fusion.BRepEdge,edgeDist:adsk.core.ValueCommandInput,tabW
         if tabSketch.isValid == True:
             tabSketch.name = str(error)
 
-def alltest(edgeDist:adsk.core.ValueCommandInput,tabWidth:adsk.core.ValueCommandInput,tabQuantity:adsk.core.IntegerSpinnerCommandInput):
-    #get current design and all bodies
-    product = app.activeProduct
-    design = adsk.fusion.Design.cast(product)
-    comp = design.activeComponent
-    bodies = comp.bRepBodies
-    minEdgeLength = (tabWidth.value+edgeDist.value*2)*tabQuantity.value
-
-    for body in bodies:
-        edges = body.edges
-        for edge in edges:
-            if edge.length >= minEdgeLength:
-                drawTab(edge,edgeDist,tabWidth,tabQuantity)
 
 def drawTabOld(tface:adsk.fusion.BRepFace):
     try:
