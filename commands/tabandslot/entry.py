@@ -106,7 +106,7 @@ def command_created(args: adsk.core.CommandCreatedEventArgs):
     #value input for tab edge distance if autoTab is false
     tabSpacing_input = inputs.addValueInput("tabSpacing","Minimum Tab Spacing",defaultLengthUnits,default_tab_spacing)
     #integer slider input for number of tabs if autoTab is false
-    tabCount_input = inputs.addIntegerSliderCommandInput("tabCount","Number of Tabs",0,5)
+    # tabCount_input = inputs.addIntegerSliderCommandInput("tabCount","Number of Tabs",0,5)
     #select input for selecting edges where tabs should be placed 
     tabEdge_input = inputs.addSelectionInput('tabEdge','Tab Edge','select edges to put tabs onto')
     tabEdge_input.addSelectionFilter('LinearEdges')
@@ -116,7 +116,7 @@ def command_created(args: adsk.core.CommandCreatedEventArgs):
     #tab specification  disabled since autoTab enabled by default 
     tabWidth_input.isEnabled = False
     tabSpacing_input.isEnabled = False
-    tabCount_input.isEnabled = False
+    # tabCount_input.isEnabled = False
     
     # TODO Connect to the events that are needed by this command.
     futil.add_handler(args.command.execute, command_execute, local_handlers=local_handlers)
