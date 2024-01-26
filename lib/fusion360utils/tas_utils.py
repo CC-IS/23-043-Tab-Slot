@@ -26,7 +26,7 @@ def autoTab(selectedEdges:adsk.core.ObjectCollection,tabWidth_input:adsk.core.Va
             sketchFace = tEdge.faces.item(1)
         
         mt:adsk.fusion.UserParameter = design.userParameters.itemByName("mt")
-        if mt.objectType == None:
+        if mt == None:
             ui.messageBox("add user parameter 'mt' that specifies material thickness ")
             return
 
@@ -188,9 +188,9 @@ def autoTab(selectedEdges:adsk.core.ObjectCollection,tabWidth_input:adsk.core.Va
             
             if tabWidth_input == None:
                 tabWidth = design.userParameters.itemByName("tabWidth")
-                minTabSpacing = 3*tabWidth.value
                 if tabWidth == None:
                     tabWidth = design.userParameters.add("tabWidth",adsk.core.ValueInput.createByString(f"3*{mt.name}"),design.unitsManager.defaultLengthUnits,"")
+                minTabSpacing = 3*tabWidth.value
             else:
                 tabWidth = tabWidth_input
                 minTabSpacing = tabSpacing_input.value
