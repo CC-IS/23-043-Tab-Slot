@@ -24,8 +24,12 @@ IS_PROMOTED = True
 # command it will be inserted beside. Not providing the command to position it
 # will insert it at the end.
 WORKSPACE_ID = 'FusionSolidEnvironment'
-PANEL_ID = 'SolidScriptsAddinsPanel'
-COMMAND_BESIDE_ID = 'ScriptsManagerCommand'
+# PANEL_ID = 'SolidScriptsAddinsPanel'
+PANEL_ID = 'SolidCreatePanel'
+
+# COMMAND_BESIDE_ID = 'ScriptsManagerCommand'
+COMMAND_BESIDE_ID = 'EmbossCmd'
+
 
 # Resource location for command icons, here we assume a sub folder in this directory named "resources".
 ICON_FOLDER = os.path.join(os.path.dirname(os.path.abspath(__file__)), 'resources', '')
