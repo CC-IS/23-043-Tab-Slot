@@ -25,7 +25,10 @@ def autoTab(selectedEdges:adsk.core.ObjectCollection,tabWidth_input:adsk.core.Va
         else:
             sketchFace = tEdge.faces.item(1)
         
-        mt = design.userParameters.itemByName("mt")
+        mt:adsk.fusion.UserParameter = design.userParameters.itemByName("mt")
+        if mt.objectType == None:
+            ui.messageBox("add user parameter 'mt' that specifies material thickness ")
+            return
 
         
         def extrudeProfiles():
@@ -182,7 +185,7 @@ def autoTab(selectedEdges:adsk.core.ObjectCollection,tabWidth_input:adsk.core.Va
                 return centerRectangle
 
             #calculate tab spacing depending on specified tab width and spacing settings
-            mt:adsk.fusion.UserParameter = design.userParameters.itemByName("mt")
+            
             if tabWidth_input == None:
                 tabWidth = design.userParameters.itemByName("tabWidth")
                 minTabSpacing = 3*tabWidth.value
