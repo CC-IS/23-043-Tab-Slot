@@ -17,13 +17,16 @@ Add-in for Fusion 360 CAD to automate the modelling of tab and slot features. In
 A use case of this add-in is creating a laser cut box. Let's say we have already modelled a box like the image below:
 <img width="1440" alt="TAS_tutorial_box" src="https://github.com/CC-IS/23-043-Tab-Slot/assets/122337539/5b3b2b77-7cc7-49d5-8c85-8170db879abb">
 
-To
+The Tab and Slot command is located in the solid create panel
 <img width="1440" alt="TAS_tutorial_select" src="https://github.com/CC-IS/23-043-Tab-Slot/assets/122337539/0b5f7075-3d27-442a-b5d7-9ebc98a30d58">
 
+Selecting the command opens up a dialog. The "Tab Edge" field allow you to select edges that you would like to add tabs to. The edges must be in the same plane and belong to the same body. Leaving "Auto Tab" checked lets the add-in decide how wide the tabs should be and how many should be added.
 <img width="1440" alt="TAS_tutorial_first" src="https://github.com/CC-IS/23-043-Tab-Slot/assets/122337539/d529611f-8996-4607-bfa3-c0318a50dfab">
 
+The box after running the tab and slot command a few times with auto tab enabled
 <img width="1440" alt="TAS_tutorial_second" src="https://github.com/CC-IS/23-043-Tab-Slot/assets/122337539/0af09754-c063-4592-ac48-5b660e721f12">
 
+Unchecking autotab allows for the tab width and minimum tab spacing to be adjusted
 <img width="1440" alt="TAS_tutorial_third" src="https://github.com/CC-IS/23-043-Tab-Slot/assets/122337539/33a12843-3157-4661-a23e-298517830b42">
 
 <img width="1440" alt="TAS_tutorial_explode" src="https://github.com/CC-IS/23-043-Tab-Slot/assets/122337539/b4114c7c-958a-4c28-891a-dc73c4893c62">
