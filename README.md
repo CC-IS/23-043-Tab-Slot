@@ -23,10 +23,11 @@ The Tab and Slot command is located in the solid create panel
 Selecting the command opens up a dialog. The "Tab Edge" field allow you to select edges that you would like to add tabs to. The edges must be in the same plane and belong to the same body. Leaving "Auto Tab" checked lets the add-in decide how wide the tabs should be and how many should be added.
 <img width="1440" alt="TAS_tutorial_first" src="https://github.com/CC-IS/23-043-Tab-Slot/assets/122337539/d529611f-8996-4607-bfa3-c0318a50dfab">
 
-The box after running the tab and slot command a few times with auto tab enabled
+The box after running the tab and slot command a few times with auto tab enabled. Unchecking autotab allows for the tab width and minimum tab spacing to be adjusted
 <img width="1440" alt="TAS_tutorial_second" src="https://github.com/CC-IS/23-043-Tab-Slot/assets/122337539/0af09754-c063-4592-ac48-5b660e721f12">
 
-Unchecking autotab allows for the tab width and minimum tab spacing to be adjusted
+In just a few clicks we now have a box with tab and slot features
 <img width="1440" alt="TAS_tutorial_third" src="https://github.com/CC-IS/23-043-Tab-Slot/assets/122337539/33a12843-3157-4661-a23e-298517830b42">
 
+Exploding the assembely we can see the tab and slot features more clearly
 <img width="1440" alt="TAS_tutorial_explode" src="https://github.com/CC-IS/23-043-Tab-Slot/assets/122337539/b4114c7c-958a-4c28-891a-dc73c4893c62">
